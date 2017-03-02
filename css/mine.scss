@@ -1,0 +1,14 @@
+.reveal ul,
+.reveal ol {
+  display: block;
+  list-style-position: inside;
+}
+
+@for $i from 2 through 5 {
+  .col-#{$i} {
+    column-count: $i;
+    > * {
+      break-inside: avoid;
+    }
+  }
+}
