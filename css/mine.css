@@ -3,6 +3,9 @@
   display: block;
   list-style-position: inside; }
 
+button {
+  font-size: 24px; }
+
 .col-2 {
   -webkit-column-count: 2;
      -moz-column-count: 2;

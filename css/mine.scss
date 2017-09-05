@@ -4,6 +4,10 @@
   list-style-position: inside;
 }
 
+button {
+  font-size: 24px;
+}
+
 @for $i from 2 through 5 {
   .col-#{$i} {
     column-count: $i;
