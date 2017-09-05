@@ -7,6 +7,9 @@
 .reveal label {
   font-size: 24px; }
 
+.reveal img {
+  height: auto; }
+
 .col-2 {
   -webkit-column-count: 2;
      -moz-column-count: 2;
