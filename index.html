@@ -141,7 +141,8 @@
               <li>Make an audio context</li>
               <li>Make an audio source in the context</li>
               <li>Make effects within the context</li>
-              <li>Connect source to the effect and the effects to a destination</li>
+              <li>Connect source to the effects</li>
+              <li>Connect effects to the context destination</li>
             </ol>
           </section>
           <section>
@@ -150,21 +151,102 @@
           </section>
           <section>
             <h2>The audio context</h2>
-            <pre><code data-trim data-noescape>
+            <pre><code class="js" data-trim data-noescape>
 // Feature-test window.AudioContext
 var context = new AudioContext();
             </code></pre>
           </section>
           <section>
-            <h2>Audio sources</h2>
-            <pre><code data-trim data-noescape>
-var osc = context.createOscillator();
+            <h2>Audio sources and effects</h2>
+            <pre><code class="js" data-trim data-noescape>
+var osc = context.createOscillator(),
+    gain = context.createGain();
 osc.type = 'sine';
 osc.frequency.value = 440;
-osc.connect(context.destination);
+osc.connect(gain);
+gain.connect(context.destination);
 osc.start();
             </code></pre>
-            <button id="audio-source-osc">Play</button>
+            <div><button id="audio-source-osc">Play</button></div>
+            <div>
+              <label>Type:</label>
+              <select id="audio-source-osc-type">
+                <option value="sine" selected>sine</option>
+                <option value="square">square</option>
+                <option value="sawtooth">sawtooth</option>
+                <option value="triangle">triangle</option>
+              </select>
+            </div>
+            <div>
+              <label>Frequency:</label>
+              <input id="audio-source-osc-freq" type="range" max="2000" min="20" value="440" />
+            </div>
+            <div>
+              <label>Volume:</label>
+              <input class="master-vol" type="range" max="2" min="0" value="0.1" step="0.01" />
+            </div>
+          </section>
+          <section>
+            <h2>Loading samples</h2>
+            <pre><code class="js" data-trim data-noescape>
+var sampleBuffer,
+    url = 'samples/snare/cd_snare_80s.wav',
+    request = new XMLHttpRequest();
+request.open('GET', url, true);
+// Set response type
+request.responseType = 'arraybuffer';
+request.onload = function() {
+  // Decode and store buffer
+  context.decodeAudioData(request.response, function(buffer) {
+    sampleBuffer = buffer;
+  });
+}
+request.send();
+            </code></pre>
+          </section>
+          <section>
+            <h2>Playing a buffer</h2>
+            <pre><code class="js" data-trim data-noescape>
+var playSound = function(buffer, time) {
+  var sample = context.createBufferSource();
+  sample.buffer = buffer;
+  //sample.loop = true;
+  sample.connect(context.destination);
+  sample.start(time);
+}
+playSound(sampleBuffer);
+            </code></pre>
+            <div><button id="audio-source-sample">Play</button></div>
+            <div>
+              <label>Volume:</label>
+              <input class="master-vol" type="range" max="2" min="0" value="0.1" step="0.01" />
+            </div>
+          </section>
+          <section>
+            <h2>Timing</h2>
+            <pre><code class="js" data-trim data-noescape>
+var startTime = context.currentTime + 0.1;
+var tempo = 80; // BPM
+var eighthNoteTime = (60 / tempo)  / 2;
+for (var bar = 0; bar < 2; bar++) {
+  var time = startTime + bar * 8 * eighthNoteTime;
+  // Play the bass (kick) drum on beats 1, 5
+  playSound(tomBuffer, time);
+  playSound(tomBuffer, time + 4 * eighthNoteTime);
+  // Play the snare drum on beats 3, 7
+  playSound(snareBuffer, time + 2 * eighthNoteTime);
+  playSound(snareBuffer, time + 6 * eighthNoteTime);
+  // Play the hi-hat every eighthh note.
+  for (var i = 0; i < 8; ++i) {
+    playSound(rimBuffer, time + i * eighthNoteTime);
+  }
+}
+            </code></pre>
+            <div>
+              <button id="audio-source-timing">Play</button>
+              <label>Volume:</label>
+              <input class="master-vol" type="range" max="2" min="0" value="0.1" step="0.01" />
+            </div>
           </section>
         </section>
 			</div>

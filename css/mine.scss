@@ -1,11 +1,13 @@
-.reveal ul,
-.reveal ol {
-  display: block;
-  list-style-position: inside;
-}
-
-button {
-  font-size: 24px;
+.reveal {
+  ul,
+  ol {
+    display: block;
+    list-style-position: inside;
+  }
+  button,
+  label {
+    font-size: 24px;
+  }
 }
 
 @for $i from 2 through 5 {
