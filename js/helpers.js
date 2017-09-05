@@ -4,13 +4,13 @@
       freqRange = document.getElementById('audio-source-osc-freq'),
       volRange = document.getElementsByClassName('master-vol'),
       playSample = document.getElementById('audio-source-sample'),
-      playTiming = document.getElementById('audio-source-timing'),
+      playTiming = document.getElementsByClassName('audio-source-timing')[0],
       context = new AudioContext(),
       gain = context.createGain(),
       osc = context.createOscillator(),
       sampleUrl = 'samples/snare/cd_snare_80s.wav',
       sampleList = [
-        'samples/snare/cd_snare_80s.wav',
+        'samples/snare/cd_snare_doof.wav',
         'samples/rim/Rim.wav',
         'samples/toms/Tom Low copy 2.wav'
       ],
@@ -149,7 +149,7 @@
     var eighthNoteTime = (60 / tempo)  / 2;
     for (var bar = 0; bar < 2; bar++) {
       var time = startTime + bar * 8 * eighthNoteTime;
-      // Play the bass (kick) drum on beats 1, 5
+      // Play the toms drum on beats 1, 5
       playSound(tomBuffer, time);
       playSound(tomBuffer, time + 4 * eighthNoteTime);
 
@@ -157,7 +157,7 @@
       playSound(snareBuffer, time + 2 * eighthNoteTime);
       playSound(snareBuffer, time + 6 * eighthNoteTime);
 
-      // Play the hi-hat every eighthh note.
+      // Play the rim every eighthh note.
       for (var i = 0; i < 8; ++i) {
         playSound(rimBuffer, time + i * eighthNoteTime);
       }
