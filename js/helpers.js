@@ -4,11 +4,12 @@
       freqRange = document.getElementById('audio-source-osc-freq'),
       volRange = document.getElementsByClassName('master-vol'),
       playSample = document.getElementById('audio-source-sample'),
-      playTiming = document.getElementsByClassName('audio-source-timing')[0],
+      playTiming = document.getElementById('audio-source-timing'),
+      playTimingLive = document.getElementById('audio-source-timing-live'),
       thereminVid = document.getElementById('theremin-vid'),
-      context = new AudioContext(),
+      context = Tone.context,
       thereminSrc = context.createMediaElementSource(thereminVid),
-      gain = context.createGain(),
+      gain = Tone.Master.input,
       osc = context.createOscillator(),
       sampleUrl = 'samples/snare/cd_snare_80s.wav',
       sampleList = [
@@ -30,14 +31,12 @@
   var WIDTH = canvas.width;
 
   var analyser = context.createAnalyser();
+  var bufferLength = analyser.fftSize = 2048;
+  var dataArray = new Uint8Array(bufferLength);
+
   analyser.minDecibels = -100;
   analyser.maxDecibels = -10;
   analyser.smoothingTimeConstant = 0.85;
-
-  analyser.fftSize = 2048;
-  var bufferLength = analyser.fftSize;
-
-  var dataArray = new Uint8Array(bufferLength);
 
   var draw = function() {
     canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -46,15 +45,12 @@
 
     analyser.getByteTimeDomainData(dataArray);
 
-    canvasCtx.fillStyle = 'rgba(0, 0, 0, 0)';
-    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-
     canvasCtx.lineWidth = 2;
     canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
 
     canvasCtx.beginPath();
 
-    var sliceWidth = WIDTH * 1.0 / bufferLength;
+    var sliceWidth = WIDTH / bufferLength;
     var x = 0;
 
     for(var i = 0; i < bufferLength; i++) {
@@ -228,6 +224,35 @@
     }
   };
 
+  var playTimingLiveHandler = function() {
+    var startTime = context.currentTime + 0.1;
+    var tempo = 80; // BPM
+    var eighthNoteTime = (60 / tempo)  / 2;
+    var buffers = {
+      tom: tomBuffer,
+      snare: snareBuffer,
+      rim: rimBuffer
+    };
+    var channels = {
+      tom: [1, 0, 0, 0, 1, 0, 0, 0],
+      snare: [0, 0, 1, 0, 0, 0, 1, 0],
+      rim: [1, 1, 1, 1, 1, 1, 1, 1]
+    };
+    var pos = 0;
+    var play = function() {
+      ['tom', 'snare', 'rim'].forEach(function(chan) {
+        if (channels[chan][pos]) {
+          playSound(buffers[chan]);
+        }
+      });
+      if (pos !== channels['tom'].length) {
+        pos++;
+        setTimeout(play, eighthNoteTime * 1000);
+      }
+    };
+    play();
+  };
+
   var typeHandler = function(e) {
     osc.type = this.value;
   };
@@ -252,4 +277,5 @@
   });
   playSample.addEventListener('mousedown', playSampleHandler);
   playTiming.addEventListener('mousedown', playTimingHandler);
+  playTimingLive.addEventListener('mousedown', playTimingLiveHandler);
 })();

@@ -263,7 +263,38 @@ for (var bar = 0; bar < 2; bar++) {
 }
             </code></pre>
             <div>
-              <button class="audio-source-timing">Play</button>
+              <button id="audio-source-timing">Play</button>
+              <label>Volume:</label>
+              <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
+            </div>
+          </section>
+          <section>
+            <h2>Timing</h2>
+            <pre><code class="js" data-trim data-noescape>
+var startTime = context.currentTime + 0.1;
+var tempo = 80; // BPM
+var eighthNoteTime = (60 / tempo)  / 2;
+var channels = {
+  tom:   [1, 0, 0, 0, 1, 0, 0, 0],
+  snare: [0, 0, 1, 0, 0, 0, 1, 0],
+  rim:   [1, 1, 1, 1, 1, 1, 1, 1]
+};
+var pos = 0;
+var play = function() {
+  ['tom', 'snare', 'rim'].forEach(function(chan) {
+    if (channels[chan][pos]) {
+      playSound(buffers[chan]);
+    }
+  });
+  if (pos !== channels['tom'].length) {
+    pos++;
+    setTimeout(play, eighthNoteTime * 1000);
+  }
+};
+play();
+            </code></pre>
+            <div>
+              <button id="audio-source-timing-live">Play</button>
               <label>Volume:</label>
               <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
             </div>
@@ -272,27 +303,98 @@ for (var bar = 0; bar < 2; bar++) {
             <h2>Analysis</h2>
             <pre><code class="js" data-trim data-noescape>
 var analyser = context.createAnalyser();
-gain.connect(analyser); // Like master volume gain node
-analyser.fftSize = 2048;
-var bufferLength = analyser.frequencyBinCount;
+var bufferLength = analyser.fftSize = 2048;
 var dataArray = new Uint8Array(bufferLength);
-analyser.getByteTimeDomainData(dataArray);
-// Make a requestAnimationFrame handler that
-// Loops over bufferLength and uses dataArray
-// To update a canvas or whatever.
+
+analyser.minDecibels = -100;
+analyser.maxDecibels = -10;
+analyser.smoothingTimeConstant = 0.85;
+canvasCtx.lineWidth = 2;
+canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+
+var draw = function() {
+  var sliceWidth = WIDTH / bufferLength;
+  var x = 0;
+  var v, y;
+  // Schedule next run
+  drawVisual = requestAnimationFrame(draw);
+  // clear previous frame
+  canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+  // Update dataArray
+  analyser.getByteTimeDomainData(dataArray);
+
+  canvasCtx.beginPath();
+  for(var i = 0; i < bufferLength; i++) {
+    // Determine offset
+    v = dataArray[i] / 128.0;
+    y = v * HEIGHT/2;
+    // Special case first run
+    if(i === 0) {
+      canvasCtx.moveTo(x, y);
+    } else {
+      canvasCtx.lineTo(x, y);
+    }
+    // Next slice
+    x += sliceWidth;
+  }
+  // Wrap it up
+  canvasCtx.lineTo(canvas.width, canvas.height/2);
+  canvasCtx.stroke();
+};
+
+draw();
             </code></pre>
             <p>See <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API">MDN</a>
           </section>
         </section>
+        <section>
+          <section>
+            <h2>Tone.js</h2>
+            <ul>
+              <li>Comes with predefined instruments that are easy to tweak</li>
+              <li>Fixes the issue with timing</li>
+              <li>Automagically tempo-relative</li>
+              <li>It knows pitch-octave notation (like G4)</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Predefined instruments</h2>
+
+            <pre><code class="js" data-trim data-noescape>
+// Make a new synth and connect it to the master output
+var synth = new Tone.Synth().toMaster();
+// Play a G4 for an eithth note
+synth.triggerAttackRelease('G4', '8n');
+metalSynth.triggerAttackRelease('8n');
+            </code></pre>
+            <div>
+              <button onmousedown="new Tone.Synth().toMaster().triggerAttackRelease('G4', '8n')">Synth</button>
+              <button onmousedown="new Tone.AMSynth().toMaster().triggerAttackRelease('G4', '8n')">AMSynth</button>
+              <button onmousedown="new Tone.MonoSynth().toMaster().triggerAttackRelease('G4', '8n')">MonoSynth</button>
+              <button onmousedown="new Tone.DuoSynth().toMaster().triggerAttackRelease('G4', '8n')">DuoSynth</button>
+              <button onmousedown="new Tone.PolySynth().toMaster().triggerAttackRelease('G4', '8n')">PolySynth</button>
+              <button onmousedown="new Tone.FMSynth().toMaster().triggerAttackRelease('G4', '8n')">FMSynth</button>
+              <button onmousedown="new Tone.MembraneSynth().toMaster().triggerAttackRelease('G2', '8n')">MembraneSynth</button>
+              <button onmousedown="new Tone.PluckSynth().toMaster().triggerAttackRelease('G4', '8n')">PluckSynth</button>
+              <button onmousedown="new Tone.MetalSynth().toMaster().triggerAttackRelease('8n')">MetalSynth</button>
+              <div>
+                <label>Volume:</label>
+                <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
+              </div>
+            </div>
+          </section>
+        </section>
+
         <section>
           <img src="images/Drupalcamp_wide.002.jpeg" height="1080" width="1920" />
         </section>
 			</div>
 		</div>
 
-    <script src="js/helpers.js"></script>
 		<script src="lib/js/head.min.js"></script>
     <script src="js/reveal.js"></script>
+    <script src="js/Tone.min.js"></script>
+    <script src="js/helpers.js"></script>
 
 		<script>
 
