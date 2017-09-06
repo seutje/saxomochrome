@@ -82,7 +82,7 @@
   }, false);
 
   thereminSrc.connect(analyser);
-  thereminSrc.connect(context.destination);
+  thereminSrc.connect(gain);
 
   function BufferLoader(context, urlList, callback) {
     this.context = context;
