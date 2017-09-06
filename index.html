@@ -23,6 +23,7 @@
 		</script>
 	</head>
 	<body>
+    <canvas width="500" height="300" id="oscilloscope"></canvas>
 		<div class="reveal">
 			<div class="slides">
         <section>
@@ -50,6 +51,7 @@
         <section>
           <h2>Overview</h2>
           <ol class="bare col-2">
+              <li>Why, though?</li>
               <li>What is sound?</li>
               <li>Terminology</li>
               <li>Short history</li>
@@ -62,6 +64,18 @@
               <li>Timing</li>
               <li>Visualisation</li>
           </ul>
+        </section>
+
+        <section>
+          <section>
+            <h2>Why, though?</h2>
+            <h3>It's JavaScript, do you really need to ask?</h3>
+            <p>In seriousness: Audio synthesizing hardware and software can be pretty expensive and lossless formats are pretty large. We all use a browser and having music defined in plaintext makes it more portable.</p>
+          </section>
+          <section>
+            <h2>Why, though?</h2>
+            <p>... But mostly just because we can!</p>
+          </section>
         </section>
 
         <section>
@@ -88,11 +102,11 @@
           <section>
             <h2>Terminology</h2>
             <ul class="bare">
-              <li>Oscillator = thing that spits out values that revolve around a base value, going up and down with a certain frequency and amplitude.</li>
+              <li>Oscillator = thing that spits out values between -1 and 1, going up and down with a certain frequency and amplitude.</li>
               <li>Modulator = thing that modifies a value, adding a delay, distortion, ...</li>
               <li>Filter = thing that limits the range of a value.</li>
-              <li>Sequencer = thing that steps through a sequence at a given rate.</li>
-              <li>Samplerate = how often per second an oscillator changes value.</li>
+              <li>Sequencer = thing that steps through a list at a given rate.</li>
+              <li>Samplerate = how often per second an oscillator value is sampled.</li>
             </ul>
           </section>
         </section>
@@ -105,7 +119,7 @@
           </section>
           <section>
             <h2>History: Theremin</h2>
-            <video src="video/theremin.mp4" controls></video>
+            <video id="theremin-vid" src="video/theremin.mp4" controls></video>
             <p>1919 - Theremin: No physical contact. One antenna controlls pitch, other controls volume.</p>
           </section>
           <section>
@@ -189,7 +203,7 @@ osc.start();
             </div>
             <div>
               <label>Volume:</label>
-              <input class="master-vol" type="range" max="2" min="0" value="0.1" step="0.01" />
+              <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
             </div>
           </section>
           <section>
@@ -225,7 +239,7 @@ playSound(sampleBuffer);
             <div><button id="audio-source-sample">Play</button></div>
             <div>
               <label>Volume:</label>
-              <input class="master-vol" type="range" max="2" min="0" value="0.1" step="0.01" />
+              <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
             </div>
           </section>
           <section>
@@ -251,8 +265,23 @@ for (var bar = 0; bar < 2; bar++) {
             <div>
               <button class="audio-source-timing">Play</button>
               <label>Volume:</label>
-              <input class="master-vol" type="range" max="2" min="0" value="0.1" step="0.01" />
+              <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
             </div>
+          </section>
+          <section>
+            <h2>Analysis</h2>
+            <pre><code class="js" data-trim data-noescape>
+var analyser = context.createAnalyser();
+gain.connect(analyser); // Like master volume gain node
+analyser.fftSize = 2048;
+var bufferLength = analyser.frequencyBinCount;
+var dataArray = new Uint8Array(bufferLength);
+analyser.getByteTimeDomainData(dataArray);
+// Make a requestAnimationFrame handler that
+// Loops over bufferLength and uses dataArray
+// To update a canvas or whatever.
+            </code></pre>
+            <p>See <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API">MDN</a>
           </section>
         </section>
         <section>

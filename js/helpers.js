@@ -5,7 +5,9 @@
       volRange = document.getElementsByClassName('master-vol'),
       playSample = document.getElementById('audio-source-sample'),
       playTiming = document.getElementsByClassName('audio-source-timing')[0],
+      thereminVid = document.getElementById('theremin-vid'),
       context = new AudioContext(),
+      thereminSrc = context.createMediaElementSource(thereminVid),
       gain = context.createGain(),
       osc = context.createOscillator(),
       sampleUrl = 'samples/snare/cd_snare_80s.wav',
@@ -20,6 +22,67 @@
       snareBuffer,
       rimBuffer,
       tomBuffer;
+
+
+  var canvas = document.getElementById('oscilloscope');
+  var canvasCtx = canvas.getContext('2d');
+  var HEIGHT = canvas.height;
+  var WIDTH = canvas.width;
+
+  var analyser = context.createAnalyser();
+  analyser.minDecibels = -100;
+  analyser.maxDecibels = -10;
+  analyser.smoothingTimeConstant = 0.85;
+
+  analyser.fftSize = 2048;
+  var bufferLength = analyser.fftSize;
+
+  var dataArray = new Uint8Array(bufferLength);
+
+  var draw = function() {
+    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+    drawVisual = requestAnimationFrame(draw);
+
+    analyser.getByteTimeDomainData(dataArray);
+
+    canvasCtx.fillStyle = 'rgba(0, 0, 0, 0)';
+    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    canvasCtx.lineWidth = 2;
+    canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+
+    canvasCtx.beginPath();
+
+    var sliceWidth = WIDTH * 1.0 / bufferLength;
+    var x = 0;
+
+    for(var i = 0; i < bufferLength; i++) {
+
+      var v = dataArray[i] / 128.0;
+      var y = v * HEIGHT/2;
+
+      if(i === 0) {
+        canvasCtx.moveTo(x, y);
+      } else {
+        canvasCtx.lineTo(x, y);
+      }
+
+      x += sliceWidth;
+    }
+
+    canvasCtx.lineTo(canvas.width, canvas.height/2);
+    canvasCtx.stroke();
+  };
+
+  draw();
+
+  thereminVid.addEventListener('loadedmetadata', function() {
+    this.currentTime = 13;
+  }, false);
+
+  thereminSrc.connect(analyser);
+  thereminSrc.connect(context.destination);
 
   function BufferLoader(context, urlList, callback) {
     this.context = context;
@@ -86,6 +149,7 @@
 
   osc.start();
   gain.gain.value = volRange[0].value;
+  gain.connect(analyser);
   gain.connect(context.destination);
   sampleRequest.open('GET', sampleUrl, true);
   sampleRequest.responseType = 'arraybuffer';
