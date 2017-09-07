@@ -502,7 +502,7 @@ synth.triggerAttack('G4');
           <section>
             <h2>Timing: Transport</h2>
             <pre><code class="js" data-trim data-noescape>
-Tone.Transport.scheduleRepeat(function(time) {
+var repeatID = Tone.Transport.scheduleRepeat(function(time) {
   synth.triggerAttackRelease('C4', '8n');
 }, '4n');
 // set BPM and start the main transport
@@ -510,7 +510,7 @@ Tone.Transport.bpm.value = 120;
 Tone.Transport.start();
             </code></pre>
             <div>
-              <button onmousedown="if (this.innerText === 'Play') {Tone.Transport.scheduleRepeat(function(time) {duoSynth.triggerAttackRelease('C4', '8n');}, '4n');Tone.Transport.start();this.innerText = 'Stop';} else {Tone.Transport.stop();Tone.Transport.clear();this.innerText = 'Play'};">Play</button>
+              <button onmousedown="if (this.innerText === 'Play') {window.repeatID = Tone.Transport.scheduleRepeat(function(time) {duoSynth.triggerAttackRelease('C4', '8n');}, '4n');Tone.Transport.start();this.innerText = 'Stop';} else {Tone.Transport.stop();Tone.Transport.clear(window.repeatID);this.innerText = 'Play'};">Play</button>
               <div>
                 <label>bpm:</label>
                 <input oninput="Tone.Transport.bpm.value = this.value" type="range" max="300" min="80" value="120" step="1" />
@@ -528,7 +528,7 @@ var sequence = ['C4', 'E4', 'G4', 'A4'];
 var loop = new Tone.Sequence(function(time, note) {
   synth.triggerAttackRelease(note, '8n');
 }, sequence, '4n');
-// Make it loop around 4 times
+// Make it loop around twice
 loop.loop = 2;
 // Start the loop
 loop.start();
@@ -546,6 +546,23 @@ Tone.Transport.start();
                 <label>Volume:</label>
                 <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
               </div>
+            </div>
+          </section>
+          <section>
+            <h2>Offline rendering</h2>
+            <pre><code class="js" data-trim data-noescape>
+// Prepare a player and hook it up to master
+var player = new Tone.Player().toMaster();
+// Render 1 minute
+Tone.Offline(function(Transport) {
+  // Your code, timed on the passed in Transport
+}, 60).then(function(buffer) {
+  player.buffer = buffer;
+  player.start();
+});
+            </code></pre>
+            <div>
+              <a href="demo.html">Demo</a>
             </div>
           </section>
         </section>
