@@ -32,9 +32,10 @@
         harmonicity: document.getElementById('instVibHr').value
       }).toMaster(),
       sequence = ['C4', 'E4', 'G4', 'A4'],
-      sequencer = new Tone.Sequence(function(time, note) {
+      initSequencer = function() { return new Tone.Sequence(function(time, note) {
         duoSynth.triggerAttackRelease(note, '8n');
-      }, sequence, '4n'),
+      }, sequence, '4n');},
+      sequencer,
       bufferLoader,
       snareBuffer,
       rimBuffer,
@@ -98,11 +99,13 @@
 
   vibratoLFO.connect(dynamicSynth.vibratoAmount);
   vibratoLFO.start();
+  sequencer = initSequencer();
   sequencer.loop = 2;
   window.dynamicSynth = dynamicSynth;
   window.vibratoLFO = vibratoLFO;
   window.duoSynth = duoSynth;
   window.sequencer = sequencer;
+  window.initSequencer = initSequencer;
 
   function BufferLoader(context, urlList, callback) {
     this.context = context;

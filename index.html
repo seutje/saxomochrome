@@ -103,7 +103,7 @@
           <section>
             <h2>Terminology</h2>
             <ul class="bare">
-              <li>Oscillator = thing that spits out values between -1 and 1, going up and down with a certain frequency and amplitude.</li>
+              <li>Oscillator = thing that spits out values between -1 and 1, going up and down with a certain frequency, amplitude and shape.</li>
               <li>Modulator = thing that modifies a value, adding a delay, distortion, ...</li>
               <li>Filter = thing that limits the range of a value.</li>
               <li>Sequencer = thing that steps through a list at a given rate.</li>
@@ -113,6 +113,9 @@
         </section>
 
         <section>
+          <section>
+            <h2>Boring incomplete history time!</h2>
+          </section>
           <section>
             <h2>History: Teleharmonium</h2>
             <img src="images/Teleharmonium1897.jpg" />
@@ -211,7 +214,7 @@ osc.start();
             <h2>Loading samples</h2>
             <pre><code class="js" data-trim data-noescape>
 var sampleBuffer,
-    url = 'samples/snare/cd_snare_80s.wav',
+    url = 'samples/snare/cd_snare_80s.wav', // Thanks Nik!
     request = new XMLHttpRequest();
 request.open('GET', url, true);
 // Set response type
@@ -438,7 +441,7 @@ simpleSampler = new Tone.Sampler({
             </div>
           </section>
           <section>
-            <h2><a href="/docs/#DuoSynth">Instruments up close</a></h2>
+            <h2><a href="docs/#DuoSynth">Instruments up close</a></h2>
             <pre><code class="js" data-trim data-noescape>
 var synth = new Tone.DuoSynth({
   vibratoAmount:0.3,
@@ -537,7 +540,7 @@ Tone.Transport.bpm.value = 120;
 Tone.Transport.start();
             </code></pre>
             <div>
-              <button onmousedown="if (this.innerText === 'Play') {sequencer.start();Tone.Transport.start();this.innerText = 'Stop';} else {sequencer.stop();Tone.Transport.stop();this.innerText = 'Play'};">Play</button>
+              <button onmousedown="if (this.innerText === 'Play') {sequencer = initSequencer();sequencer.loop=2;sequencer.start();Tone.Transport.start();this.innerText = 'Stop';} else {sequencer.stop();Tone.Transport.stop();this.innerText = 'Play'};">Play</button>
               <div>
                 <label>bpm:</label>
                 <input oninput="Tone.Transport.bpm.value = this.value" type="range" max="300" min="80" value="120" step="1" />
