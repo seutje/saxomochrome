@@ -25,8 +25,16 @@
         window.simpleSampler = simpleSampler;
       }).toMaster(),
       dynamicSynth = new Tone.DuoSynth().toMaster(),
-      vibratoLFO = new Tone.LFO(2, 0, 50),
-      duoSynth = new Tone.DuoSynth({vibratoAmount: document.getElementById('instVibAm').value, vibratoRate: document.getElementById('instVibRt').value, harmonicity: document.getElementById('instVibHr').value}).toMaster(),
+      vibratoLFO = new Tone.LFO(0.3, 0, 50),
+      duoSynth = new Tone.DuoSynth({
+        vibratoAmount: document.getElementById('instVibAm').value,
+        vibratoRate: document.getElementById('instVibRt').value,
+        harmonicity: document.getElementById('instVibHr').value
+      }).toMaster(),
+      sequence = ['C4', 'E4', 'G4', 'A4'],
+      sequencer = new Tone.Sequence(function(time, note) {
+        duoSynth.triggerAttackRelease(note, '8n');
+      }, sequence, '4n'),
       bufferLoader,
       snareBuffer,
       rimBuffer,
@@ -90,9 +98,11 @@
 
   vibratoLFO.connect(dynamicSynth.vibratoAmount);
   vibratoLFO.start();
+  sequencer.loop = 2;
   window.dynamicSynth = dynamicSynth;
   window.vibratoLFO = vibratoLFO;
   window.duoSynth = duoSynth;
+  window.sequencer = sequencer;
 
   function BufferLoader(context, urlList, callback) {
     this.context = context;
