@@ -477,7 +477,7 @@ synth.triggetAttack('G4');
 var synth = new Tone.DuoSynth();
 // Simple wrapper to make a low-frequency oscillator with min/max
 var synthLFO = new Tone.LFO(2, 0, 50);
-// Connect LFO to vibratoAmount value
+// Connect LFO to vibratoAmount attribute
 synthLFO.connect(synth.vibratoAmount);
 // Start LFO
 synthLFO.start();
