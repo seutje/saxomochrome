@@ -42,10 +42,15 @@
           <ul class="bare">
               <li>Steve De Jonghe</li>
               <li>Intertubes plumber @ <a href="http://wunderkraut.com">Wunderkraut</a> <a href="http://wunderkraut.be">Belgium</a></li>
-              <li>seutje (Code)</li>
-              <li>multipass (Overwatch)</li>
-              <li>Birdless Flight (FPV Freestyle)</li>
+              <li>seutje - multipass - Birdless Flight</li>
+              <li>No audio education or experience</li>
+              <li>Tempo of a lemon on a stick</li>
           </ul>
+        </section>
+
+        <section>
+          <h2>Warning</h2>
+          <h3>I have no clue what I am doing!</h3>
         </section>
 
         <section>
@@ -58,11 +63,7 @@
               <li>Web Audio API basics</li>
               <li>Analysis</li>
               <li>Tone.js</li>
-              <li>Instruments</li>
-              <li>Effects</li>
-              <li>Interface</li>
-              <li>Timing</li>
-              <li>Visualisation</li>
+              <li>Fun times!</li>
           </ul>
         </section>
 
@@ -106,7 +107,7 @@
               <li>Modulator = thing that modifies a value, adding a delay, distortion, ...</li>
               <li>Filter = thing that limits the range of a value.</li>
               <li>Sequencer = thing that steps through a list at a given rate.</li>
-              <li>Samplerate = how often per second an oscillator value is sampled.</li>
+              <li>Envelope = determines what happens when an intrument's key is struck and released.</li>
             </ul>
           </section>
         </section>
@@ -181,8 +182,8 @@ var context = new AudioContext();
             <pre><code class="js" data-trim data-noescape>
 var osc = context.createOscillator(),
     gain = context.createGain();
-osc.type = 'sine';
-osc.frequency.value = 440;
+osc.type = 'sine'; // Default
+osc.frequency.value = 440; // Default
 osc.connect(gain);
 gain.connect(context.destination);
 osc.start();
@@ -350,6 +351,7 @@ draw();
         <section>
           <section>
             <h2>Tone.js</h2>
+            <a href="https://learningmusic.ableton.com/">DIY Ableton!</a>
             <ul>
               <li>Comes with predefined instruments that are easy to tweak</li>
               <li>Fixes the issue with timing</li>
@@ -374,9 +376,122 @@ metalSynth.triggerAttackRelease('8n');
               <button onmousedown="new Tone.DuoSynth().toMaster().triggerAttackRelease('G4', '8n')">DuoSynth</button>
               <button onmousedown="new Tone.PolySynth().toMaster().triggerAttackRelease('G4', '8n')">PolySynth</button>
               <button onmousedown="new Tone.FMSynth().toMaster().triggerAttackRelease('G4', '8n')">FMSynth</button>
-              <button onmousedown="new Tone.MembraneSynth().toMaster().triggerAttackRelease('G2', '8n')">MembraneSynth</button>
+              <button onmousedown="new Tone.MembraneSynth().toMaster().triggerAttackRelease('G2', '8n')">MembraneSynth G2</button>
               <button onmousedown="new Tone.PluckSynth().toMaster().triggerAttackRelease('G4', '8n')">PluckSynth</button>
               <button onmousedown="new Tone.MetalSynth().toMaster().triggerAttackRelease('8n')">MetalSynth</button>
+              <div>
+                <label>Volume:</label>
+                <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2>Easy sampler</h2>
+
+            <pre><code class="js" data-trim data-noescape>
+simpleSampler = new Tone.Sampler({
+  'C4' : 'samples/snare/cd_snare_80s.wav'
+}, function() {
+  window.simpleSampler = simpleSampler;
+}).toMaster(),
+            </code></pre>
+            <div>
+              <button onmousedown="simpleSampler.triggerAttackRelease(document.getElementById('simpleSamplerRepitch').value, '8n')">Play sample</button>
+              <select id="simpleSamplerRepitch">
+                <!--
+                <option value="A0">A0</option>
+                <option value="C1">C1</option>
+                <option value="D#1">D#1</option>
+                <option value="F#1">F#1</option>
+                <option value="A1">A1</option>
+                <option value="C2">C2</option>
+                -->
+                <option value="D#2">D#2</option>
+                <option value="F#2">F#2</option>
+                <option value="A2">A2</option>
+                <option value="C3">C3</option>
+                <option value="D#3">D#3</option>
+                <option value="F#3">F#3</option>
+                <option value="A3">A3</option>
+                <option value="C4" selected>C4</option>
+                <option value="D#4">D#4</option>
+                <option value="F#4">F#4</option>
+                <option value="A4">A4</option>
+                <option value="C5">C5</option>
+                <option value="D#5">D#5</option>
+                <option value="F#5">F#5</option>
+                <option value="A5">A5</option>
+                <!--
+                <option value="C6">C6</option>
+                <option value="D#6">D#6</option>
+                <option value="F#6">F#6</option>
+                <option value="A6">A6</option>
+                <option value="C7">C7</option>
+                <option value="D#7">D#7</option>
+                <option value="F#7">F#7</option>
+                <option value="A7">A7</option>
+                <option value="C8">C8</option>
+                -->
+              </select>
+              <div>
+                <label>Volume:</label>
+                <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2><a href="/docs/#DuoSynth">Instruments up close</a></h2>
+            <pre><code class="js" data-trim data-noescape>
+var synth = new Tone.DuoSynth({
+  vibratoAmount:0.5,
+  vibratoRate:5,
+  harmonicity:1.5
+});
+synth.triggetAttack('G4');
+            </code></pre>
+            <div>
+              <button onmousedown="if (this.innerText === 'Play'){duoSynth.triggerAttack('G4');this.innerText = 'Stop';} else {duoSynth.triggerRelease();this.innerText = 'Play';}">Play</button>
+              <div>
+                <label>Vibrato Amount:</label>
+                <input id="instVibAm" oninput="duoSynth.vibratoAmount.value = this.value;" type="range" max="50" min="0" value="0.5" step="0.001" />
+              </div>
+              <div>
+                <label>Vibrato Rate:</label>
+                <input id="instVibRt" oninput="duoSynth.vibratoRate.value = this.value;" type="range" max="10" min="0" value="5" step="0.1" />
+              </div>
+              <div>
+                <label>Harmonicity:</label>
+                <input id="instVibHr" oninput="duoSynth.harmonicity.value = this.value;" type="range" max="10" min="0" value="1.5" step="0.1" />
+              </div>
+              <div>
+                <label>Volume:</label>
+                <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2><a href="/docs/#DuoSynth">It's all dynamic!</a></h2>
+            <pre><code class="js" data-trim data-noescape>
+var synth = new Tone.DuoSynth();
+var synthLFO = new Tone.LFO(2, 0, 50);
+synthLFO.connect(synth.vibratoAmount);
+synthLFO.start();
+synth.triggerAttack('G4');
+            </code></pre>
+            <div>
+              <button onmousedown="if (this.innerText === 'Play') {dynamicSynth.triggerAttack('G4');this.innerText = 'Stop';} else {dynamicSynth.triggerRelease();this.innerText = 'Play'};">Play</button>
+              <div>
+                <label>LFO freq:</label>
+                <input oninput="console.log(vibratoLFO.frequency.value);vibratoLFO.frequency.value = this.value" type="range" max="5" min=".001" value="0.5" step="0.001" />
+              </div>
+              <div>
+                <label>LFO min:</label>
+                <input oninput="vibratoLFO.min = this.value" id="instVibRt" type="range" max="10" min="0" value="0" step="0.1" />
+              </div>
+              <div>
+                <label>LFO max:</label>
+                <input oninput="vibratoLFO.max = this.value" id="instVibHr" type="range" max="100" min="0" value="50" step="0.1" />
+              </div>
               <div>
                 <label>Volume:</label>
                 <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />

@@ -19,6 +19,14 @@
       ],
       sampleRequest = new XMLHttpRequest(),
       sampleSource = context.createBufferSource(),
+      simpleSampler = new Tone.Sampler({
+        'C4' : 'samples/snare/cd_snare_80s.wav'
+      }, function() {
+        window.simpleSampler = simpleSampler;
+      }).toMaster(),
+      dynamicSynth = new Tone.DuoSynth().toMaster(),
+      vibratoLFO = new Tone.LFO(2, 0, 50),
+      duoSynth = new Tone.DuoSynth({vibratoAmount: document.getElementById('instVibAm').value, vibratoRate: document.getElementById('instVibRt').value, harmonicity: document.getElementById('instVibHr').value}).toMaster(),
       bufferLoader,
       snareBuffer,
       rimBuffer,
@@ -79,6 +87,12 @@
 
   thereminSrc.connect(analyser);
   thereminSrc.connect(gain);
+
+  vibratoLFO.connect(dynamicSynth.vibratoAmount);
+  vibratoLFO.start();
+  window.dynamicSynth = dynamicSynth;
+  window.vibratoLFO = vibratoLFO;
+  window.duoSynth = duoSynth;
 
   function BufferLoader(context, urlList, callback) {
     this.context = context;
