@@ -7,6 +7,7 @@
       playTiming = document.getElementById('audio-source-timing'),
       playTimingLive = document.getElementById('audio-source-timing-live'),
       thereminVid = document.getElementById('theremin-vid'),
+      recorder = document.getElementById('recorder'),
       context = Tone.context,
       thereminSrc = context.createMediaElementSource(thereminVid),
       gain = Tone.Master.input,
@@ -40,7 +41,6 @@
       snareBuffer,
       rimBuffer,
       tomBuffer;
-
 
   var canvas = document.getElementById('oscilloscope');
   var canvasCtx = canvas.getContext('2d');
@@ -296,6 +296,35 @@
     });
   };
 
+  var recordHandler = function(e) {
+    var osc = context.createOscillator();
+    var dest = context.createMediaStreamDestination();
+    var recorder = new MediaRecorder(dest.stream);
+    var chunks = [];
+    osc.connect(dest);
+
+    recorder.ondataavailable = function(e) {
+      chunks.push(e.data);
+    };
+    recorder.onstop = function(e) {
+      var blob = new Blob(chunks, {type: 'audio/wav'});
+      var output = document.querySelector('#recorderOutput');
+      var download = document.querySelector('#recorderDownload');
+      var blobURL = URL.createObjectURL(blob);
+      download.setAttribute('href', blobURL);
+      download.setAttribute('download', 'recording.wav');
+      output.src = blobURL;
+    };
+
+    recorder.start();
+    osc.start();
+    setTimeout(function() {
+      recorder.requestData();
+      recorder.stop();
+      osc.stop();
+    }, 2000);
+  };
+
   playButton.addEventListener('mousedown', playHandler);
   typeSelect.addEventListener('input', typeHandler);
   freqRange.addEventListener('input', freqHandler);
@@ -305,4 +334,5 @@
   playSample.addEventListener('mousedown', playSampleHandler);
   playTiming.addEventListener('mousedown', playTimingHandler);
   playTimingLive.addEventListener('mousedown', playTimingLiveHandler);
+  recorder.addEventListener('mousedown', recordHandler);
 })();

@@ -190,6 +190,9 @@ osc.frequency.value = 440; // Default
 osc.connect(gain);
 gain.connect(context.destination);
 osc.start();
+// ...
+osc.stop();
+osc.disconnect();
             </code></pre>
             <div><button id="audio-source-osc">Play</button></div>
             <div>
@@ -302,6 +305,54 @@ play();
               <label>Volume:</label>
               <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
             </div>
+          </section>
+          <section>
+            <h2>Recording</h2>
+            <pre><code class="js" data-trim data-noescape>
+var osc = context.createOscillator();
+// Prepare a destination and a recorder.
+var dest = context.createMediaStreamDestination();
+var recorder = new MediaRecorder(dest.stream);
+// Prepare chunks array
+var chunks = [];
+// Connect source to record to our destination
+osc.connect(dest);
+
+// Set up handler to fill chunks array
+recorder.ondataavailable = function(e) {
+  chunks.push(e.data);
+};
+// Set up handler to turn chunks into a blob
+recorder.onstop = function(e) {
+  // Make a WAV blob
+  var blob = new Blob(chunks, {type: 'audio/wav'});
+  // Grab elements
+  var output = document.querySelector('#recorderOutput');
+  var download = document.querySelector('#recorderDownload');
+  // Create URL object from blob
+  var blobURL = URL.createObjectURL(blob);
+  // Set attributes on download and audio element
+  download.setAttribute('href', blobURL);
+  download.setAttribute('download', 'recording.wav');
+  output.src = blobURL;
+};
+
+// Start our recorder
+recorder.start();
+// Start the source
+osc.start();
+// Schedule 2 seconds in the future
+setTimeout(function() {
+  // Update recorder data
+  recorder.requestData();
+  // Stop recorder and source
+  recorder.stop();
+  osc.stop();
+}, 2000);
+            </code></pre>
+            <button id="recorder">Record</button>
+            <audio id="recorderOutput" controls></audio>
+            <a id="recorderDownload" href="#">Download</a>
           </section>
           <section>
             <h2>Analysis</h2>
