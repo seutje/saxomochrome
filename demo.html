@@ -25,7 +25,7 @@
   </head>
 
   <body>
-    <script style="white-space: pre;display: block;background: #fff;height: calc(100% - 3rem);">
+    <div style="white-space: pre;display: block;background: #fff;height: calc(100% - 3rem);">
     (function() {
       var player = new Tone.Player().toMaster();
 
@@ -53,15 +53,16 @@
           })
         })
 
-      }).then(function(buffer) {
+      }, 10).then(function(buffer) {
         player.buffer = buffer;
         document.querySelector('button').removeAttribute('disabled')
       })
       
     })();
-    </script>
+    </div>
     <button disabled>Play buffer</button>
     <script src="js/Tone.min.js"></script>
+    <script src="js/demo.js"></script>
 
   </body>
 </html>
