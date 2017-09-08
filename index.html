@@ -281,33 +281,50 @@ for (var bar = 0; bar < 2; bar++) {
 var startTime = context.currentTime + 0.1;
 var tempo = 80; // BPM
 var eighthNoteTime = (60 / tempo)  / 2;
-var buffers = {
-  tom: tomBuffer,
-  snare: snareBuffer,
-  rim: rimBuffer
-};
-var channels = {
-  tom: [1, 0, 0, 0, 1, 0, 0, 0],
-  snare: [0, 0, 1, 0, 0, 0, 1, 0],
-  rim: [1, 1, 1, 1, 1, 1, 1, 1]
-};
+// Prepare channels with sequence and buffer
+var channels = [
+  {
+    label: 'tom',
+    seq: [1, 0, 0, 0, 1, 0, 0, 0],
+    buffer: tomBuffer
+  },
+  {
+    label: 'snare',
+    seq: [0, 0, 1, 0, 0, 0, 1, 0],
+    buffer: snareBuffer
+  },
+  {
+    label: 'rim',
+    seq: [1, 1, 1, 1, 1, 1, 1, 1],
+    buffer: rimBuffer
+  }
+];
+// Track sequence position and bar amount
 var pos = 0;
 var bar = 0;
+// Looper function
 var play = function() {
-  if (pos === channels['tom'].length && bar <1) {
+  // Did we loop around less than twice?
+  if (pos === channels[0].seq.length && bar <1) {
+    // Increase bar count
     bar++;
+    // Reset sequence position
     pos = 0;
   }
-  ['tom', 'snare', 'rim'].forEach(function(chan) {
-    if (channels[chan][pos]) {
-      playSound(buffers[chan]);
+  channels.forEach(function(chan) {
+    // Do we need to play the current sequence position?
+    if (chan.seq[pos]) {
+      // Play buffer
+      playSound(chan.buffer);
     }
   });
-  if (pos !== channels['tom'].length) {
+  // Are we done?
+  if (pos !== channels[0].seq.length) {
     pos++;
     setTimeout(play, eighthNoteTime * 1000);
   }
 };
+// Initialize looper
 play();
             </code></pre>
             <div>
