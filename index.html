@@ -281,13 +281,23 @@ for (var bar = 0; bar < 2; bar++) {
 var startTime = context.currentTime + 0.1;
 var tempo = 80; // BPM
 var eighthNoteTime = (60 / tempo)  / 2;
+var buffers = {
+  tom: tomBuffer,
+  snare: snareBuffer,
+  rim: rimBuffer
+};
 var channels = {
-  tom:   [1, 0, 0, 0, 1, 0, 0, 0],
+  tom: [1, 0, 0, 0, 1, 0, 0, 0],
   snare: [0, 0, 1, 0, 0, 0, 1, 0],
-  rim:   [1, 1, 1, 1, 1, 1, 1, 1]
+  rim: [1, 1, 1, 1, 1, 1, 1, 1]
 };
 var pos = 0;
+var bar = 0;
 var play = function() {
+  if (pos === channels['tom'].length && bar <1) {
+    bar++;
+    pos = 0;
+  }
   ['tom', 'snare', 'rim'].forEach(function(chan) {
     if (channels[chan][pos]) {
       playSound(buffers[chan]);

@@ -266,7 +266,12 @@
       rim: [1, 1, 1, 1, 1, 1, 1, 1]
     };
     var pos = 0;
+    var bar = 0;
     var play = function() {
+      if (pos === channels['tom'].length && bar <1) {
+        bar++;
+        pos = 0;
+      }
       ['tom', 'snare', 'rim'].forEach(function(chan) {
         if (channels[chan][pos]) {
           playSound(buffers[chan]);
