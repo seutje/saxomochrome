@@ -430,6 +430,16 @@ draw();
           </section>
           <section>
             <h2>Bonus round: speech synthesis</h2>
+            <pre><code class="js" data-trim data-noescape>
+var msg = new SpeechSynthesisUtterance('Hello I am browser');
+window.speechSynthesis.speak(msg);
+            </code></pre>
+            <div>
+              <button onclick="window.speechSynthesis.speak(new SpeechSynthesisUtterance('Hello I am browser'))">Speak!</button>
+            </div>
+          </section>
+          <section>
+            <h2>Bonus round: speech synthesis</h2>
             <pre><code style="max-height: 250px;" class="js" data-trim data-noescape>
 // Make a speech synthesiser
 var synth = window.speechSynthesis;
