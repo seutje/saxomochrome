@@ -95,7 +95,7 @@
         synth.chain(phaser, Tone.Master);
         return synth;
       },
-      vol: -30,
+      vol: -40,
       timing: '4n',
       interval: '4n',
       measure: measure * 2
