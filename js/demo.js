@@ -1,4 +1,6 @@
 (function() {
+StartAudioContext(Tone.context, '#pressMe').then(function(){
+
   // Track code
 
   var tempo = 120;
@@ -61,15 +63,16 @@
         null, null, null, null,
       ],
       sched: [
-        1, 1, 1, 1,
-        1, 1, 1, 1
+        1, 0, 1, 0,
+        1, 0, 1, 0
       ],
       init: function() {
         return new Tone.DuoSynth().toMaster();
       },
       vol: -10,
       timing: '16n',
-      interval: '8n'
+      interval: '8n',
+      measure: measure * 2
     },
     {
       label: 'bass',
@@ -108,6 +111,8 @@
   var buttonWrapper = document.querySelector('.buttonWrapper');
   var promises = [];
   var loop;
+
+  Tone.context.latencyHint = 'playback';
 
   channels.forEach(function(chan) {
     chan.button = document.createElement('button');
@@ -177,5 +182,8 @@
     player.start();
   };
   buttonWrapper.appendChild(allBtn);
+
+
+});
 
 })();
