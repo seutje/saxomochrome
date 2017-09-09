@@ -255,10 +255,11 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
   var loop;
 
   volSlider.setAttribute('type', 'range');
-  volSlider.setAttribute('min', '-20');
-  volSlider.setAttribute('max', '30');
+  volSlider.setAttribute('min', '0');
+  volSlider.setAttribute('max', '5');
   volSlider.setAttribute('value', '1');
-  volSlider.setAttribute('step', '0.1');
+  volSlider.setAttribute('step', '0.01');
+
   volSlider.oninput = function(e) {
     vol.gain.value = this.value;
   };
