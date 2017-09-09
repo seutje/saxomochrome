@@ -49,11 +49,11 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       ],
       init: function() {
         var synth = new Tone.MetalSynth().toMaster();
-        var reverb = new Tone.Freeverb(.9, 5000);
+        var reverb = new Tone.Freeverb(0.9, 5000);
         synth.chain(reverb, Tone.Master);
         return synth;
       },
-      vol: -20,
+      vol: -30,
       noNote: true,
       interval: '16n'
     },
@@ -72,7 +72,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       init: function() {
         return new Tone.DuoSynth().toMaster();
       },
-      vol: -10,
+      vol: -5,
       timing: '16n',
       interval: '8n',
       measure: measure * 2
@@ -138,9 +138,36 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         return synth;
       },
       vol: 10,
-      timing: '18n',
+      timing: '16n',
       interval: '8n',
       measure: measure * 2
+    },
+    {
+      label: 'clap',
+      seq: [
+        null, null, 'C1', null,
+        null, null, 'E1', null
+      ],
+      sched: [
+        0, 0, 0, 0,
+        1, 1, 1, 1,
+        0, 0, 0, 0,
+        1, 1, 1, 1
+      ],
+      init: function() {
+        var synth = new Tone.PluckSynth({
+          attackNoise: 3,
+          dampening: 500,
+          resonance: 0.5
+        });
+        var dist = new Tone.Distortion(2.5);
+        synth.chain(dist, Tone.Master);
+        return synth;
+      },
+      vol: -20,
+      timing: '16n',
+      interval: '8n',
+      measure: measure
     }
 
   ];
