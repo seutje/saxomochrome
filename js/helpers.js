@@ -106,6 +106,8 @@
   window.duoSynth = duoSynth;
   window.sequencer = sequencer;
   window.initSequencer = initSequencer;
+  window.analyser = analyser;
+  window.masterVol = gain;
 
   function BufferLoader(context, urlList, callback) {
     this.context = context;

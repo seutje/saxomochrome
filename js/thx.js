@@ -105,10 +105,15 @@
       // Fade out.
       master_gain.gain(0, tsw.now() + sound_length - 4, 'linear');
 
-      tsw.connect(master_gain, volume, tsw.speakers);
+      tsw.connect(master_gain, volume, masterVol);
+      tsw.connect(master_gain, analyser);
   };
 
   var play = function () {
+    // TSW requires us to have at least 5 seconds of history...
+    if (Tone.context.currentTime < 5) {
+      return setTimeout(play, 10);
+    }
     master_gain = tsw.gain(0.2);
     createOscillators(30);
     playOscillators(0);

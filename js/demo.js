@@ -107,8 +107,9 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
 
   // Player code
 
-  var player;
   var buttonWrapper = document.querySelector('.buttonWrapper');
+  var vol = new Tone.Gain().toMaster();
+  var player;
   var promises = [];
   var loop;
 
@@ -120,7 +121,16 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
     chan.button.innerText = 'Play ' + chan.label;
     chan.button.onmousedown = function(e) {
       e.preventDefault();
-      chan.ownPlayer.start();
+      if (this.classList.contains('active')) {
+        chan.ownPlayer.stop();
+        this.classList.remove('active');
+        this.innerText = 'Play ' + chan.label;
+      }
+      else {
+        chan.ownPlayer.start();
+        this.classList.add('active');
+        this.innerText = 'Stop ' + chan.label;
+      }
     };
     buttonWrapper.appendChild(chan.button);
 
@@ -167,7 +177,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         Tone.Transport.start();
       });
     }, length).then(function(buffer) {
-      player = new Tone.Player().toMaster();
+      player = new Tone.Player().connect(vol);
       player.buffer = buffer;
       allBtn.disabled = false;
     });
@@ -179,7 +189,16 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
   allBtn.innerText = 'Play all';
   allBtn.onmousedown = function(e) {
     e.preventDefault();
-    player.start();
+    if (this.classList.contains('active')) {
+      player.stop();
+      this.classList.remove('active');
+      this.innerText = 'Play all';
+    }
+    else {
+      player.start();
+      this.classList.add('active');
+      this.innerText = 'Stop all';
+    }
   };
   buttonWrapper.appendChild(allBtn);
 

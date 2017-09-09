@@ -21,6 +21,13 @@
   }
 }
 
+.master-vol-wrapper {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 999;
+}
+
 #oscilloscope {
   position: absolute;
   top: 0;

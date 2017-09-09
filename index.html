@@ -24,6 +24,10 @@
 	</head>
 	<body>
     <canvas width="500" height="300" id="oscilloscope"></canvas>
+    <div class="master-vol-wrapper">
+      <label>Volume:</label>
+      <input class="master-vol" type="range" max="1" min="0" value="0.05" step="0.001" />
+    </div>
 		<div class="reveal">
 			<div class="slides">
         <section>
@@ -31,7 +35,8 @@
         </section>
         <section class="thx">
           <h1>Saxomochrome</h1>
-          <h3><a>Playing the browser like a fiddle</a></h3>
+          <h3>Playing the browser like a fiddle</h3>
+          <p><a hre="https://seutje.github.io/saxomochrome/">https://seutje.github.io/saxomochrome (use headphones plz)</a></p>
           <p>
             <small>Steve De Jonghe</small>
           </p>
@@ -783,11 +788,10 @@ Tone.Offline(function(Transport) {
     <script src="js/Tone.min.js"></script>
     <script src="js/helpers.js"></script>
     <script src="js/speech.js"></script>
-    <script src="js/tsw.min.js"></script>
+    <script src="js/tsw.js"></script>
     <script src="js/thx.js"></script>
 
 		<script>
-
       // Full list of configuration options available here:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
