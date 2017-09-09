@@ -48,7 +48,10 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         1, 1, 1, 1
       ],
       init: function() {
-        return new Tone.MetalSynth().toMaster();
+        var synth = new Tone.MetalSynth().toMaster();
+        var reverb = new Tone.Freeverb(.9, 5000);
+        synth.chain(reverb, Tone.Master);
+        return synth;
       },
       vol: -20,
       noNote: true,
@@ -102,16 +105,64 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       timing: '4n',
       interval: '4n',
       measure: measure * 2
+    },
+    {
+      label: 'conga',
+      seq: [
+        'G3', 'C4', 'C4', 'C4',
+        null, null, null, null,
+        'G3', 'C4', 'C4', 'C4',
+        null, null, null, null,
+
+        'G3', 'C4', 'G3', 'C4',
+        null, null, null, null,
+        'G3', 'C4', 'C4', 'C4',
+        null, null, null, null
+      ],
+      sched: [
+        0, 0, 1, 1,
+        1, 1, 1, 0
+      ],
+      init: function() {
+        var synth =  new Tone.MembraneSynth({
+          "pitchDecay" : 0.008,
+          "octaves" : 2,
+          "envelope" : {
+            "attack" : 0.006,
+            "decay" : 0.009,
+            "sustain" : 0.2
+          }
+        }).toMaster();
+        var feedback = new Tone.StereoXFeedbackEffect(1);
+        synth.chain(feedback, Tone.Master);
+        return synth;
+      },
+      vol: 10,
+      timing: '18n',
+      interval: '8n',
+      measure: measure * 2
     }
+
   ];
 
   // Player code
 
   var buttonWrapper = document.querySelector('.buttonWrapper');
   var vol = new Tone.Gain().toMaster();
+  var volSlider = document.createElement('input');
   var player;
   var promises = [];
   var loop;
+
+  volSlider.setAttribute('type', 'range');
+  volSlider.setAttribute('min', '-20');
+  volSlider.setAttribute('max', '30');
+  volSlider.setAttribute('value', '1');
+  volSlider.setAttribute('step', '0.1');
+  volSlider.oninput = function(e) {
+    vol.gain.value = this.value;
+  };
+  buttonWrapper.parentNode.appendChild(volSlider);
 
   Tone.context.latencyHint = 'playback';
 
