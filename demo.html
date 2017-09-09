@@ -13,11 +13,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <style>
-    body, html {
-      height: 100%;
-    }
-    </style>
 
     <!--[if lt IE 9]>
     <script src="lib/js/html5shiv.js"></script>
@@ -25,42 +20,7 @@
   </head>
 
   <body>
-    <div style="white-space: pre;display: block;background: #fff;height: calc(100% - 3rem);">
-    (function() {
-      var player = new Tone.Player().toMaster();
-
-      Tone.Offline(function(Transport) {
-
-        var channels = [
-          {
-            label: 'kick',
-            seq: [
-              'G2', null, null, null,
-              'G2', null, null, null,
-              'G2', null, null, null,
-              'G2', null, null, null
-            ],
-            init: function() {
-              return new Tone.MembraneSynth();
-            }
-          }
-        ];
-
-        channels.forEach(function(chan) {
-          chan.instr = chan.init();
-          chan.loop = new Tone.Sequence(function(note, time) {
-            
-          })
-        })
-
-      }, 10).then(function(buffer) {
-        player.buffer = buffer;
-        document.querySelector('button').removeAttribute('disabled')
-      })
-      
-    })();
-    </div>
-    <button disabled>Play buffer</button>
+    <div class="buttonWrapper"></div>
     <script src="js/Tone.min.js"></script>
     <script src="js/demo.js"></script>
 

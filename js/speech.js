@@ -58,11 +58,11 @@
     speak();
   };
 
-  pitch.onchange = function() {
+  pitch.oninput = function() {
     pitchValue.textContent = pitch.value;
   };
 
-  rate.onchange = function() {
+  rate.oninput = function() {
     rateValue.textContent = rate.value;
   };
 
