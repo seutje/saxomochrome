@@ -5,7 +5,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
 
   var tempo = 120;
   var measure = tempo / 60;
-  var length = measure * 8;
+  var length = measure * 32;
 
   var channels = [
     {
@@ -53,7 +53,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         synth.chain(reverb, Tone.Master);
         return synth;
       },
-      vol: -30,
+      vol: -40,
       noNote: true,
       interval: '16n'
     },
@@ -74,6 +74,50 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       },
       vol: -5,
       timing: '16n',
+      interval: '8n',
+      measure: measure * 2
+    },
+    {
+      label: 'synth2',
+      seq: [
+        'C1', null, 'E4', null,
+        'F2', null, 'F3', null,
+        'A1', null, 'G3', null,
+        'D2', null, 'C3', null
+      ],
+      sched: [
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        1, 0, 1, 0,
+        1, 0, 1, 0
+      ],
+      init: function() {
+        return new Tone.FMSynth({
+          'harmonicity': 5,
+          'modulationIndex': 15,
+          'detune': 0,
+          'oscillator': {
+            'type': 'sine'
+          },
+          'envelope': {
+            'attack': 0.02,
+            'decay': 0.5,
+            'sustain': 1,
+            'release': 0.5
+          },
+          "modulation": {
+            'type': 'sine'
+          },
+          'modulationEnvelope': {
+            'attack': 0.9,
+            'decay': 0.02,
+            'sustain': 1,
+            'release': 0.5
+          }
+        }).toMaster();
+      },
+      vol: -5,
+      timing: '8n',
       interval: '8n',
       measure: measure * 2
     },
@@ -113,11 +157,6 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         null, null, null, null,
         'G3', 'C4', 'C4', 'C4',
         null, null, null, null,
-
-        'G3', 'C4', 'G3', 'C4',
-        null, null, null, null,
-        'G3', 'C4', 'C4', 'C4',
-        null, null, null, null
       ],
       sched: [
         0, 0, 1, 1,
@@ -137,7 +176,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         synth.chain(feedback, Tone.Master);
         return synth;
       },
-      vol: 10,
+      vol: 5,
       timing: '16n',
       interval: '8n',
       measure: measure * 2
@@ -164,7 +203,40 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         synth.chain(dist, Tone.Master);
         return synth;
       },
-      vol: -20,
+      vol: -30,
+      timing: '16n',
+      interval: '8n',
+      measure: measure
+    },
+    {
+      label: 'clap2',
+      seq: [
+        null, 'C1', 'C1', null,
+        null, 'C1', null, null
+      ],
+      sched: [
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 1, 1,
+        1, 1, 1, 1
+      ],
+      init: function() {
+        var synth = new Tone.PluckSynth({
+          attackNoise: 3,
+          dampening: 500,
+          resonance: 0.3
+        });
+        var vib = new Tone.Vibrato();
+        var phaser = new Tone.Phaser();
+        var reverb = new Tone.JCReverb(0.5);
+        var dist = new Tone.Distortion(2.5);
+        synth.chain(vib, Tone.Master);
+        synth.chain(phaser, Tone.Master);
+        synth.chain(reverb, Tone.Master);
+        synth.chain(dist, Tone.Master);
+        return synth;
+      },
+      vol: -30,
       timing: '16n',
       interval: '8n',
       measure: measure
@@ -177,6 +249,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
   var buttonWrapper = document.querySelector('.buttonWrapper');
   var vol = new Tone.Gain().toMaster();
   var volSlider = document.createElement('input');
+  var allBtn = document.createElement('button');
   var player;
   var promises = [];
   var loop;
@@ -235,7 +308,8 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       Tone.Transport.start();
 
     }, chan.measure || measure).then(function(buffer) {
-      chan.ownPlayer = new Tone.Player().toMaster();
+      chan.ownPlayer = new Tone.Player().connect(vol);
+      chan.ownPlayer.loop = true;
       chan.buffer = chan.ownPlayer.buffer = buffer;
       chan.button.removeAttribute('disabled');
     }));
@@ -256,29 +330,29 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       });
     }, length).then(function(buffer) {
       player = new Tone.Player().connect(vol);
+      player.loop = true;
       player.buffer = buffer;
       allBtn.disabled = false;
     });
 
   });
 
-  var allBtn = document.createElement('button');
   allBtn.disabled = true;
-  allBtn.innerText = 'Play all';
+  allBtn.innerText = 'Play track';
   allBtn.onmousedown = function(e) {
     e.preventDefault();
     if (this.classList.contains('active')) {
       player.stop();
       this.classList.remove('active');
-      this.innerText = 'Play all';
+      this.innerText = 'Play track';
     }
     else {
       player.start();
       this.classList.add('active');
-      this.innerText = 'Stop all';
+      this.innerText = 'Stop track';
     }
   };
-  buttonWrapper.appendChild(allBtn);
+  buttonWrapper.parentNode.appendChild(allBtn);
 
 
 });
