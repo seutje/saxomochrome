@@ -67,12 +67,14 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       ],
       sched: [
         1, 0, 1, 0,
-        1, 0, 1, 0
+        1, 0, 1, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0
       ],
       init: function() {
         return new Tone.DuoSynth().toMaster();
       },
-      vol: -5,
+      vol: -10,
       timing: '16n',
       interval: '8n',
       measure: measure * 2
@@ -153,10 +155,10 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
     {
       label: 'conga',
       seq: [
-        'G3', 'C4', 'C4', 'C4',
         null, null, null, null,
         'G3', 'C4', 'C4', 'C4',
         null, null, null, null,
+        'G3', 'C4', 'C4', 'C4'
       ],
       sched: [
         0, 0, 1, 1,
