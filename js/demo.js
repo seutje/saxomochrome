@@ -10,16 +10,19 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
   var channels = [
     {
       label: 'kick',
+      // Single measure sequence
       seq: [
         'C2', null, null, null,
         'C2', null, null, null,
         'C2', null, null, null,
         'C2', null, 'C2', null
       ],
+      // Scheduling in the main composition
       sched: [
         0, 0, 1, 1,
         1, 1, 1, 0
       ],
+      // Instrument init function
       init: function() {
         return new Tone.MembraneSynth({
           'octaves': 10,
@@ -31,9 +34,14 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
           }
         }).toMaster();
       },
+      // Channel volume
       vol: -15,
+      // How long to strike a note
       timing: '8n',
-      interval: '16n'
+      // How often to strike a note
+      interval: '16n',
+      // How long is the channel loop
+      measure: measure
     },
     {
       label: 'hihat',
@@ -54,6 +62,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         return synth;
       },
       vol: -40,
+      // MetalSynth doesn't play notes, only pass timing.
       noNote: true,
       interval: '16n'
     },
@@ -327,6 +336,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
   var promises = [];
   var loop;
 
+  // Set up main volume slider
   volSlider.setAttribute('type', 'range');
   volSlider.setAttribute('min', '0');
   volSlider.setAttribute('max', '5');
@@ -338,12 +348,16 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
   };
   buttonWrapper.parentNode.appendChild(volSlider);
 
+  // Set latencyHint to prioritize accurate playback over speed
   Tone.context.latencyHint = 'playback';
 
+  // Loop over all our channels
   channels.forEach(function(chan) {
+    // Set up individual buttons
     chan.button = document.createElement('button');
     chan.disabled = true;
     chan.button.innerText = 'Play ' + chan.label;
+    // Handler to play/stop the channel's player
     chan.button.onmousedown = function(e) {
       e.preventDefault();
       if (this.classList.contains('active')) {
@@ -359,19 +373,28 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
     };
     buttonWrapper.appendChild(chan.button);
 
+    // Channel player to be used in main composition
     chan.player = new Tone.Player().toMaster();
 
+    // Prerencer channel and stuff in promises array
     promises.push(Tone.Offline(function(Transport) {
+      // Initialize the instrument
       chan.instr = chan.init();
+      // Set the volume
       chan.instr.volume.value = chan.vol;
+      // Make the sequence for this channel and start it.
       chan.loop = new Tone.Sequence(function(time, note) {
+        // Only play if there's a note
         if (note){
+          // Handler metalSynth not playing notes
           if (chan.noNote) {
             chan.instr.triggerAttackRelease(note);
           }
+          // Allow for timing at the note level
           else if (note.timing) {
             chan.instr.triggerAttackRelease(note.note, note.timing);
           }
+          // Fall back to timing at the channel level
           else {
             chan.instr.triggerAttackRelease(note, chan.timing);
           }
@@ -379,38 +402,52 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       }, chan.seq, chan.interval).start();
       Tone.Transport.bpm.value = tempo;
       Tone.Transport.swing = 0.5;
+      // Start the main transport
       Tone.Transport.start();
-
+    // Pass channel measure or fallback to global measure time
     }, chan.measure || measure).then(function(buffer) {
+      // Make a player for the channel
       chan.ownPlayer = new Tone.Player().connect(vol);
       chan.ownPlayer.loop = true;
+      // Put the buffer in the player and on the channel
       chan.buffer = chan.ownPlayer.buffer = buffer;
+      // Enable channel play button
       chan.button.removeAttribute('disabled');
     }));
   });
 
+  // Once all our channels are preloaded
   Promise.all(promises).then(function(buffers) {
-
+    // Preload main composition
     Tone.Offline(function(Transport) {
+      // Loop over channels and make a player for each
       channels.forEach(function(chan) {
         chan.player = new Tone.Player().toMaster();
+        // Put the channel buffer in the player
         chan.player.buffer = chan.buffer;
+        // Start a new sequence based on the scheduling and start it
         loop = new Tone.Sequence(function(time, note) {
           if (note) {
             chan.player.start();
           }
+        // Looptime set to 1 measure
         }, chan.sched, '1m').start();
+        // Start the main transport
         Tone.Transport.start();
       });
+    // Preload for length of the track
     }, length).then(function(buffer) {
+      // Make a new player for the track
       player = new Tone.Player().connect(vol);
       player.loop = true;
+      // Connect the buffer
       player.buffer = buffer;
       allBtn.disabled = false;
     });
 
   });
 
+  // Track player controls.
   allBtn.disabled = true;
   allBtn.innerText = 'Play track';
   allBtn.onmousedown = function(e) {
