@@ -11,6 +11,7 @@
       context = Tone.context,
       thereminSrc = context.createMediaElementSource(thereminVid),
       gain = Tone.Master.input,
+      thxGain = new Tone.Volume(25),
       osc = context.createOscillator(),
       sampleUrl = 'samples/snare/cd_snare_80s.wav',
       sampleList = [
@@ -96,6 +97,7 @@
 
   thereminSrc.connect(analyser);
   thereminSrc.connect(gain);
+  thxGain.connect(gain);
 
   vibratoLFO.connect(dynamicSynth.vibratoAmount);
   vibratoLFO.start();
@@ -108,6 +110,7 @@
   window.initSequencer = initSequencer;
   window.analyser = analyser;
   window.masterVol = gain;
+  window.thxGain = thxGain;
 
   function BufferLoader(context, urlList, callback) {
     this.context = context;

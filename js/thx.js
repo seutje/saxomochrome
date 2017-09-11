@@ -105,7 +105,7 @@
       // Fade out.
       master_gain.gain(0, tsw.now() + sound_length - 4, 'linear');
 
-      tsw.connect(master_gain, volume, masterVol);
+      tsw.connect(master_gain, volume, thxGain);
       tsw.connect(master_gain, analyser);
   };
 
