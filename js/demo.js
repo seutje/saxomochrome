@@ -155,33 +155,104 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
     {
       label: 'conga',
       seq: [
-        null, null, null, null,
         'G3', 'C4', 'C4', 'C4',
         null, null, null, null,
-        'G3', 'C4', 'C4', 'C4'
+        'G3', 'C4', 'C4', 'C4',
+        null, null, null, null
       ],
       sched: [
         0, 0, 1, 1,
-        1, 1, 1, 0
+        1, 1, 0, 0
       ],
       init: function() {
         var synth =  new Tone.MembraneSynth({
-          "pitchDecay" : 0.008,
-          "octaves" : 2,
+          "pitchDecay" : 0.018,
+          "octaves" : 10,
           "envelope" : {
-            "attack" : 0.006,
+            "attack" : 0.016,
             "decay" : 0.009,
             "sustain" : 0.2
           }
         }).toMaster();
         var feedback = new Tone.StereoXFeedbackEffect(1);
+        var phaser = new Tone.Phaser({
+          'frequency' : 440,
+          'octaves' : 5,
+          'baseFrequency' : 2000
+        });
         synth.chain(feedback, Tone.Master);
+        synth.chain(phaser, Tone.Master);
         return synth;
       },
-      vol: 5,
+      vol: -10,
       timing: '16n',
       interval: '8n',
       measure: measure * 2
+    },
+    {
+      label: 'guitar',
+      seq: [
+        'D3', null, 'G3', 'B3',
+        null, null, null, null,
+        'A4', null, null, null,
+        null, null, null, null,
+
+        null, null, null, null,
+        null, null, null, null,
+        null, null, null, null,
+        null, null, null, null
+      ],
+      sched: [
+        0, 0, 0, 0,
+        1, 1, 1, 1,
+        0, 0, 0, 0,
+        1, 1, 1, 1
+      ],
+      init: function() {
+        var synth = new Tone.PluckSynth({
+          attackNoise: 10,
+          dampening: 4000,
+          resonance: 0.95
+        });
+        var reverb = new Tone.Freeverb({
+          roomSize: 0.9,
+          dampening: 5000
+        });
+        var dist = new Tone.Distortion({
+          distortion: 1,
+          oversample: '2x'
+        });
+        var chorus = new Tone.Chorus({
+          frequency: 1,
+          delayTime: 1,
+          depth: 1,
+          feedback: 0.1,
+          type: 'sine',
+          spread: 180,
+        });
+        var cheby = new Tone.Chebyshev(50);
+        var wah = new Tone.AutoWah({
+          baseFrequency: 440,
+          octaves: 16,
+          sensitivity: -50,
+          Q: 5,
+          gain: 12,
+          follower:{
+            attack: 0.3,
+            release: 0.5
+          }
+        });
+        synth.chain(reverb, Tone.Master);
+        synth.chain(dist, Tone.Master);
+        synth.chain(chorus, Tone.Master);
+        synth.chain(cheby, Tone.Master);
+        synth.chain(wah, Tone.Master);
+        return synth;
+      },
+      vol: -40,
+      timing: '16n',
+      interval: '32n',
+      measure: measure
     },
     {
       label: 'clap',
