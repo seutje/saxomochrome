@@ -269,10 +269,10 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
             release: 0.5
           }
         });
-        var feedback = new Tone.FeedbackDelay('8n', 0.5);
+        var feedback = new Tone.FeedbackDelay('16n', 0.5);
         synth.toMaster();
-        synth.chain(dist, wah, Tone.Master);
-        synth.chain(feedback, dist, wah, Tone.Master);
+        synth.chain(dist, Tone.Master);
+        synth.chain(feedback, wah, Tone.Master);
         return synth;
       },
       vol: -45,
