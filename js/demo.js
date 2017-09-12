@@ -162,6 +162,37 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       measure: measure * 2
     },
     {
+      label: 'bass2',
+      seq: [
+        'C2', 'C1', 'C3', 'C1',
+        'C2', 'C1', 'C2', null
+      ],
+      sched: [
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 1, 1,
+        1, 1, 1, 1
+      ],
+      init: function() {
+        var synth = new Tone.AMSynth();
+        var dist = new Tone.Distortion(2.5);
+        var reverb = new Tone.Freeverb();
+        var phaser = new Tone.Phaser({
+          'frequency' : 15,
+          'octaves' : 15,
+          'baseFrequency' : 3000
+        });
+        synth.chain(dist, Tone.Master);
+        synth.chain(reverb, Tone.Master);
+        synth.chain(phaser, Tone.Master);
+        return synth;
+      },
+      vol: -20,
+      timing: '8n',
+      interval: '4n',
+      measure: measure * 2
+    },
+    {
       label: 'conga',
       seq: [
         'G3', 'C4', 'C4', 'C4',
@@ -170,7 +201,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         null, null, null, null
       ],
       sched: [
-        0, 0, 1, 1,
+        0, 1, 1, 1,
         1, 1, 0, 0
       ],
       init: function() {
@@ -223,10 +254,6 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
           dampening: 4000,
           resonance: 0.95
         });
-        var reverb = new Tone.Freeverb({
-          roomSize: 0.9,
-          dampening: 5000
-        });
         var dist = new Tone.Distortion({
           distortion: 1,
           oversample: '2x'
@@ -251,14 +278,13 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
             release: 0.5
           }
         });
-        synth.chain(reverb, Tone.Master);
-        synth.chain(dist, Tone.Master);
-        synth.chain(chorus, Tone.Master);
-        synth.chain(cheby, Tone.Master);
-        synth.chain(wah, Tone.Master);
+        var feedback = new Tone.FeedbackDelay('8n', 0.5);
+        synth.toMaster();
+        synth.chain(dist, wah, Tone.Master);
+        synth.chain(feedback, dist, wah, Tone.Master);
         return synth;
       },
-      vol: -40,
+      vol: -45,
       timing: '16n',
       interval: '32n',
       measure: measure
