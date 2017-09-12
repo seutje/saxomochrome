@@ -258,15 +258,6 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
           distortion: 1,
           oversample: '2x'
         });
-        var chorus = new Tone.Chorus({
-          frequency: 1,
-          delayTime: 1,
-          depth: 1,
-          feedback: 0.1,
-          type: 'sine',
-          spread: 180,
-        });
-        var cheby = new Tone.Chebyshev(50);
         var wah = new Tone.AutoWah({
           baseFrequency: 440,
           octaves: 16,
