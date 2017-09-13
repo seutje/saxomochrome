@@ -13,6 +13,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+    .trackWrapper, .buttonWrapper {
+      margin: 1rem 0;
+    }
+    </style>
 
     <!--[if lt IE 9]>
     <script src="lib/js/html5shiv.js"></script>
@@ -20,7 +25,11 @@
   </head>
 
   <body>
-    <button id="pressMe">iOS might need to press me first</button>
+    <!-- <button id="pressMe">iOS might need to press me first</button> -->
+    <div class="trackWrapper">
+      <select class="trackList"></select>
+      <button class="trackRender">Prerender track</button>
+    </div>
     <div class="buttonWrapper"></div>
     <script src="js/StartAudioContext.js"></script>
     <script src="js/Tone.min.js"></script>
