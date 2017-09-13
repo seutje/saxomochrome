@@ -352,7 +352,6 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
     // Player code
 
     var buttonWrapper = document.querySelector('.buttonWrapper');
-    var vol = new Tone.Gain().toMaster();
     var volSlider = document.createElement('input');
     var allBtn = document.createElement('button');
     var channelsLabel = document.createElement('label');
@@ -499,6 +498,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
     buttonWrapper.parentNode.appendChild(allBtn);
   };
 
+  var vol = new Tone.Gain().toMaster();
   var trackList = document.querySelector('.trackList');
   var preLoadBtn = document.querySelector('.trackRender');
   preLoadBtn.onmousedown = function(e) {
@@ -513,6 +513,9 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
     option.innerText = track.label;
     trackList.appendChild(option);
   });
+
+  var canvas = document.querySelector('.myAnalyser');
+  var myAnalyser = new MyAnalyser(canvas, Tone.Master, Tone.context);
 
 
 });

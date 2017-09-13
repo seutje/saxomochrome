@@ -14,8 +14,22 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
     .trackWrapper, .buttonWrapper {
-      margin: 1rem 0;
+      padding: 1rem 0;
+    }
+    canvas {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+    }
+    .rest {
+      position: relative;
+      z-index: 2;
     }
     </style>
 
@@ -25,14 +39,18 @@
   </head>
 
   <body>
-    <!-- <button id="pressMe">iOS might need to press me first</button> -->
-    <div class="trackWrapper">
-      <select class="trackList"></select>
-      <button class="trackRender">Prerender track</button>
+    <canvas width="500" height="300" class="myAnalyser"></canvas>
+    <div class="rest">
+      <!-- <button id="pressMe">iOS might need to press me first</button> -->
+      <div class="trackWrapper">
+        <select class="trackList"></select>
+        <button class="trackRender">Prerender track</button>
+      </div>
+      <div class="buttonWrapper"></div>
     </div>
-    <div class="buttonWrapper"></div>
     <script src="js/StartAudioContext.js"></script>
     <script src="js/Tone.min.js"></script>
+    <script src="js/myAnalyser.js"></script>
     <script src="js/demo.js"></script>
 
   </body>
