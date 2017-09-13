@@ -372,6 +372,26 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
             null, null, null, null,
             null, null, null, null,
             null, null, null, null,
+            null, null, null, null,
+
+            'D3', null, null, null,
+            null, null, null, null,
+            null, 'D4', null, null,
+            null, null, null, null,
+
+            'D3', null, null, null,
+            null, null, null, null,
+            null, null, 'D5', null,
+            null, null, null, null,
+
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
             null, null, null, null
           ],
           sched: [
@@ -410,8 +430,8 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
           },
           vol: -55,
           timing: '16n',
-          interval: '32n',
-          measure: measure * 2
+          interval: '64n',
+          measure: measure * 4
         }
       ]
     }
