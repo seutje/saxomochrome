@@ -250,9 +250,9 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       ],
       init: function() {
         var synth = new Tone.PluckSynth({
-          attackNoise: 10,
-          dampening: 4000,
-          resonance: 0.95
+          attackNoise: 35,
+          dampening: 10000,
+          resonance: 0.99
         });
         var dist = new Tone.Distortion({
           distortion: 1,
@@ -275,7 +275,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         synth.chain(feedback, wah, Tone.Master);
         return synth;
       },
-      vol: -45,
+      vol: -55,
       timing: '16n',
       interval: '32n',
       measure: measure
