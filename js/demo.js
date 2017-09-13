@@ -344,6 +344,76 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
           measure: measure
         }
       ]
+    },
+    {
+      label: 'Guitar test',
+      tempo: tempo,
+      measure: measure,
+      length: measure * 32,
+      channels: [
+        {
+          label: 'guitar',
+          seq: [
+            'D3', null, null, null,
+            null, null, null, null,
+            'D3', 'D4', null, null,
+            null, null, null, null,
+
+            'D3', null, null, null,
+            null, null, null, null,
+            'D3', 'D4', 'D5', null,
+            null, null, null, null,
+
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null
+          ],
+          sched: [
+            0, 0, 0, 0,
+            1, 1, 1, 1,
+            0, 0, 0, 0,
+            1, 1, 1, 1
+          ],
+          init: function() {
+            var synth = new Tone.PluckSynth({
+              attackNoise: 35,
+              dampening: 10000,
+              resonance: 0.99
+            });
+            var dist = new Tone.Distortion({
+              distortion: 1,
+              oversample: '2x'
+            });
+            var wah = new Tone.AutoWah({
+              baseFrequency: 440,
+              octaves: 16,
+              sensitivity: -50,
+              Q: 5,
+              gain: 12,
+              follower:{
+                attack: 0.3,
+                release: 0.5
+              }
+            });
+            var feedback = new Tone.FeedbackDelay('16n', 0.5);
+            synth.toMaster();
+            synth.chain(dist, feedback);
+            synth.chain(wah, feedback);
+            feedback.connect(Tone.Master);
+            return synth;
+          },
+          vol: -55,
+          timing: '16n',
+          interval: '32n',
+          measure: measure * 2
+        }
+      ]
     }
   ];
 
