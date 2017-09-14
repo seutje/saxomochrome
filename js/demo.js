@@ -496,7 +496,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
             synth.chain(crush, Tone.Master);
             return synth;
           },
-          vol: -30,
+          vol: -15,
           timing: '1m * 4',
           interval: '16n',
           measure: measure * 4
