@@ -363,7 +363,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
           // Scheduling in the main composition
           sched: [
             0, 0, 0, 0,
-            0, 0, 1, 1,
+            0, 0, 0, 0,
             1, 1, 1, 1,
             1, 1, 1, 1
           ],
@@ -391,9 +391,9 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         {
           label: 'hihat',
           seq: [
-            null, null, null, '32n',
+            null, null, null, '4n',
             null, null, null, null,
-            null, null, null, '32n',
+            null, null, '32n', '64n',
             null, null, null, null,
 
             null, null, null, null,
@@ -403,7 +403,9 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
           ],
           sched: [
             1, 1, 1, 1,
-            1, 1, 1, 1
+            1, 1, 1, 1,
+            1, 1, 1, 1,
+            0, 0, 0, 0
           ],
           init: function() {
             var synth = new Tone.MetalSynth({
@@ -418,11 +420,6 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
               resonance:2000,
               octaves:0.2,
             }).toMaster();
-            var reverb = new Tone.Freeverb(0.9, 5000);
-            var pitch = new Tone.PitchShift();
-            var crush = new Tone.BitCrusher(8);
-            synth.chain(crush, reverb, pitch, Tone.Master);
-            //synth.chain(pitch, Tone.Master);
             return synth;
           },
           vol: -40,
@@ -434,9 +431,9 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         {
           label: 'synth',
           seq: [
-            {note:'C4', timing: '8n'}, null, null, 'C4',
-            {note: 'C4', timing: '32n'}, null, {note: 'C4', timing: '32n'}, null,
-            {note: 'C4', timing: '32n'}, null, null, {note: 'C4', timing: '32n'},
+            {note:'C3', timing: '8n'}, null, null, 'C3',
+            {note: 'C3', timing: '32n'}, null, {note: 'C3', timing: '32n'}, null,
+            {note: 'C3', timing: '32n'}, null, null, {note: 'C3', timing: '32n'},
             null, null, null, null,
 
             null, null, null, null,
@@ -445,9 +442,9 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
             null, null, null, null
           ],
           sched: [
-            0, 0, 0, 0,
             1, 0, 1, 0,
-            0, 0, 0, 0,
+            1, 0, 1, 0,
+            1, 0, 1, 0,
             1, 0, 1, 0
           ],
           init: function() {
@@ -462,7 +459,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         {
           label: 'Atmosphere',
           seq: [
-            'C2', null, null, null,
+            'C1', null, null, null,
             null, null, null, null,
             null, null, null, null,
             null, null, null, null,
@@ -473,8 +470,8 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
             null, null, null, null
           ],
           sched: [
-            1, 0, 0, 0,
             0, 0, 0, 0,
+            1, 0, 0, 0,
             0, 0, 0, 0,
             0, 0, 0, 0
           ],
