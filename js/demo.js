@@ -481,7 +481,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
           init: function() {
             var synth = new Tone.Synth({
               oscillator : {
-                type : 'sawtooth'
+                type : 'triangle'
               },
               envelope : {
                 attack : '1m * 4',
