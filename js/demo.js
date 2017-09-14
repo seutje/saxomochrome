@@ -373,14 +373,14 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
               'octaves': 5,
               'envelope': {
                 'attack': 0.001,
-                'decay': 0.1,
-                'sustain': 1.1,
+                'decay': 0.5,
+                'sustain': 0.1,
                 'release': 0.4
               }
             }).toMaster();
           },
           // Channel volume
-          vol: -5,
+          vol: -10,
           // How long to strike a note
           timing: '8n',
           // How often to strike a note
@@ -391,7 +391,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         {
           label: 'hihat',
           seq: [
-            null, null, null, '4n',
+            null, null, null, '32n',
             null, null, null, null,
             null, null, '32n', '64n',
             null, null, null, null,
