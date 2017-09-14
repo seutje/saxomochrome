@@ -473,7 +473,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
             0, 0, 0, 0,
             1, 0, 0, 0,
             0, 0, 0, 0,
-            0, 0, 0, 0
+            1, 0, 0, 0
           ],
           init: function() {
             var synth = new Tone.Synth({
