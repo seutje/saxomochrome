@@ -346,6 +346,167 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
       ]
     },
     {
+      label: 'Freed',
+      tempo: tempo,
+      measure: measure,
+      length: measure * 32,
+      channels: [
+        {
+          label: 'kick',
+          // Single measure sequence
+          seq: [
+            'C2', null, null, null,
+            null, null, null, null,
+            'C2', null, 'C2', null,
+            null, null, null, null
+          ],
+          // Scheduling in the main composition
+          sched: [
+            0, 0, 0, 0,
+            0, 0, 1, 1,
+            1, 1, 1, 1,
+            1, 1, 1, 1
+          ],
+          // Instrument init function
+          init: function() {
+            return new Tone.MembraneSynth({
+              'octaves': 5,
+              'envelope': {
+                'attack': 0.001,
+                'decay': 0.1,
+                'sustain': 1.1,
+                'release': 0.4
+              }
+            }).toMaster();
+          },
+          // Channel volume
+          vol: -5,
+          // How long to strike a note
+          timing: '8n',
+          // How often to strike a note
+          interval: '16n',
+          // How long is the channel loop
+          measure: measure
+        },
+        {
+          label: 'hihat',
+          seq: [
+            null, null, null, '32n',
+            null, null, null, null,
+            null, null, null, '32n',
+            null, null, null, null,
+
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null
+          ],
+          sched: [
+            1, 1, 1, 1,
+            1, 1, 1, 1
+          ],
+          init: function() {
+            var synth = new Tone.MetalSynth({
+              frequency:200,
+              envelope:{
+                attack:0.001,
+                decay:0.1,
+                release:0.2,
+              },
+              harmonicity:0.5,
+              modulationIndex:16,
+              resonance:2000,
+              octaves:0.2,
+            }).toMaster();
+            var reverb = new Tone.Freeverb(0.9, 5000);
+            var pitch = new Tone.PitchShift();
+            var crush = new Tone.BitCrusher(8);
+            synth.chain(crush, reverb, pitch, Tone.Master);
+            //synth.chain(pitch, Tone.Master);
+            return synth;
+          },
+          vol: -40,
+          // MetalSynth doesn't play notes, only pass timing.
+          noNote: true,
+          interval: '16n',
+          measure: measure * 2,
+        },
+        {
+          label: 'synth',
+          seq: [
+            {note:'C4', timing: '8n'}, null, null, 'C4',
+            {note: 'C4', timing: '32n'}, null, {note: 'C4', timing: '32n'}, null,
+            {note: 'C4', timing: '32n'}, null, null, {note: 'C4', timing: '32n'},
+            null, null, null, null,
+
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null
+          ],
+          sched: [
+            0, 0, 0, 0,
+            1, 0, 1, 0,
+            0, 0, 0, 0,
+            1, 0, 1, 0
+          ],
+          init: function() {
+            var synth = new Tone.DuoSynth().toMaster();
+            return synth;
+          },
+          vol: -5,
+          timing: '16n',
+          interval: '16n',
+          measure: measure * 2
+        },
+        {
+          label: 'Atmosphere',
+          seq: [
+            'C2', null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null,
+            null, null, null, null
+          ],
+          sched: [
+            1, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0
+          ],
+          init: function() {
+            var synth = new Tone.Synth({
+              oscillator : {
+                type : 'sawtooth'
+              },
+              envelope : {
+                attack : '1m * 4',
+                decay : '4n',
+                sustain: 1,
+                release: '4n'
+              }
+            });
+            var dist = new Tone.Distortion(0.9);
+            var crush = new Tone.BitCrusher(8);
+            var chorus = new Tone.Chorus();
+            synth.chain(chorus, Tone.Master);
+            //synth.chain(crush, dist, Tone.Master);
+            //synth.chain(crush, chorus, Tone.Master);
+            synth.chain(crush, Tone.Master);
+            return synth;
+          },
+          vol: -30,
+          timing: '1m * 4',
+          interval: '16n',
+          measure: measure * 4
+        }
+      ]
+    },
+    {
       label: 'Guitar test',
       tempo: tempo,
       measure: measure,
