@@ -746,12 +746,18 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
     buttonWrapper.parentNode.appendChild(allBtn);
   };
 
+  var canvas = document.querySelector('.myAnalyser');
+  var myAnalyser = new MyAnalyser(canvas, Tone.Master, Tone.context);
+
   var vol = new Tone.Gain().toMaster();
   var trackList = document.querySelector('.trackList');
   var preLoadBtn = document.querySelector('.trackRender');
   preLoadBtn.onmousedown = function(e) {
     e.preventDefault();
     var selected = trackList.value;
+    var child = trackList.querySelector('[value="' + trackList.value + '"');
+    var index = Array.prototype.indexOf.call(trackList.children, child);
+    window.location.hash = '#track-' + index;
     makePlayer(tracks[selected]);
   };
 
@@ -762,8 +768,15 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
     trackList.appendChild(option);
   });
 
-  var canvas = document.querySelector('.myAnalyser');
-  var myAnalyser = new MyAnalyser(canvas, Tone.Master, Tone.context);
+  var hash = window.location.hash;
+  var activeTrack = 0;
+  if (hash.length && hash.indexOf('#track-') !== -1) {
+    activeTrack = parseInt(hash.replace('#track-', ''), 10);
+    if (!isNaN(activeTrack)) {
+      trackList.value = trackList.querySelectorAll('option')[activeTrack].value;
+      makePlayer(tracks[activeTrack]);
+    }
+  }
 
 
 });
