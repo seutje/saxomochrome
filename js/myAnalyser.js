@@ -48,7 +48,6 @@
       x += sliceWidth;
     }
 
-    this.canvasCtx.lineTo(this.WIDTH, this.HEIGHT / 2);
     this.canvasCtx.stroke();
   };
 
