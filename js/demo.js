@@ -481,8 +481,8 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
             ],
             init: function() {
               var synth = new Tone.Synth({
-                oscillator : {
-                  type : 'triangle'
+                oscillator: {
+                  type: 'triangle'
                 },
                 envelope : {
                   attack : '1m * 4',
@@ -494,14 +494,26 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
               var dist = new Tone.Distortion(0.9);
               var crush = new Tone.BitCrusher(8);
               var chorus = new Tone.Chorus();
-              synth.chain(chorus, Tone.Master);
-              //synth.chain(crush, dist, Tone.Master);
-              //synth.chain(crush, chorus, Tone.Master);
-              synth.chain(crush, Tone.Master);
+              var pan = new Tone.AutoPanner({
+                frequency: '16n',
+                type: 'sine',
+                depth: 0.5
+              }).start();
+              var comb = new Tone.LowpassCombFilter();
+              var filter = new Tone.Filter(2000, "highpass");
+              var reverb = new Tone.Freeverb();
+              //synth.chain(chorus, Tone.Master);
+              //synth.chain(crush, Tone.Master);
+              //synth.chain(crush, comb, pan, Tone.Master);
+              //synth.chain(chorus, pan, Tone.Master);
+              //synth.chain(dist, comb, pan, Tone.Master);
+              //synth.chain(crush, dist, comb, pan, Tone.Master);
+              //synth.chain(chorus, crush, dist, comb, pan, Tone.Master);
+              synth.chain(dist, chorus, comb, reverb, filter, pan, Tone.Master);
               return synth;
             },
             vol: -15,
-            timing: '1m * 4',
+            timing: '1m * 2',
             interval: '16n',
             measure: measure * 4
           },
@@ -534,8 +546,8 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
                 'C4' : buffer
               }).toMaster();
               var reverb = new Tone.Freeverb({
-                roomSize: 0.9,
-                dampening: 5000
+                roomSize: 0.7,
+                dampening: 9000
               });
 
               var crush = new Tone.BitCrusher(8);
@@ -543,11 +555,54 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
               snare.chain(crush, Tone.Master);
               return snare;
             },
-            vol: -35,
+            vol: -25,
             timing: '8n',
             interval: '16n',
             measure: measure * 2,
             buffer: new Tone.Buffer('samples/snare/cd_snare_80s.wav')
+          },
+          {
+            label: 'melody',
+            seq: [
+              {note:'C3', timing: '8n'}, null, null, 'C3',
+              {note: 'C3', timing: '32n'}, null, {note: 'C3', timing: '32n'}, null,
+              {note: 'C3', timing: '32n'}, null, null, {note: 'C3', timing: '32n'},
+              null, null, null, null,
+
+              null, null, null, null,
+              null, null, null, null,
+              null, null, null, null,
+              null, null, null, null
+            ],
+            sched: [
+              0, 0, 0, 0,
+              0, 0, 0, 0,
+              0, 0, 0, 0,
+              0, 0, 0, 0,
+
+              0, 0, 0, 0,
+              0, 0, 0, 0,
+              1, 0, 1, 0,
+              1, 0, 1, 0
+            ],
+            init: function() {
+              var synth = new Tone.DuoSynth();
+              var dist = new Tone.Distortion();
+              var comb = new Tone.MultibandCompressor();
+              var pan = new Tone.AutoPanner({
+                frequency: '16n',
+                type: 'sine',
+                depth: 1
+              }).start();
+              var crush = new Tone.BitCrusher(8);
+              var filter = new Tone.Filter(800, 'lowpass');
+              synth.chain(dist, comb, filter, pan, Tone.Master);
+              return synth;
+            },
+            vol: -20,
+            timing: '16n',
+            interval: '16n',
+            measure: measure
           }
         ]
       },
