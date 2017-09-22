@@ -492,24 +492,15 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
                 }
               });
               var dist = new Tone.Distortion(0.9);
-              var crush = new Tone.BitCrusher(8);
               var chorus = new Tone.Chorus();
               var pan = new Tone.AutoPanner({
                 frequency: '16n',
                 type: 'sine',
                 depth: 0.5
               }).start();
-              var comb = new Tone.LowpassCombFilter();
               var filter = new Tone.Filter(2000, "highpass");
-              var reverb = new Tone.Freeverb();
-              //synth.chain(chorus, Tone.Master);
-              //synth.chain(crush, Tone.Master);
-              //synth.chain(crush, comb, pan, Tone.Master);
-              //synth.chain(chorus, pan, Tone.Master);
-              //synth.chain(dist, comb, pan, Tone.Master);
-              //synth.chain(crush, dist, comb, pan, Tone.Master);
-              //synth.chain(chorus, crush, dist, comb, pan, Tone.Master);
-              synth.chain(dist, chorus, comb, reverb, filter, pan, Tone.Master);
+              var reverb = new Tone.Freeverb(0.9, 5000);
+              synth.chain(dist, chorus, reverb, filter, pan, Tone.Master);
               return synth;
             },
             vol: -15,
