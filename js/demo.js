@@ -499,11 +499,11 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
                 depth: 0.5
               }).start();
               var filter = new Tone.Filter(2000, "highpass");
-              var reverb = new Tone.Freeverb(0.9, 5000);
+              var reverb = new Tone.Freeverb(0.9, 2000);
               synth.chain(dist, chorus, reverb, filter, pan, Tone.Master);
               return synth;
             },
-            vol: -15,
+            vol: 0,
             timing: '1m * 2',
             interval: '16n',
             measure: measure * 4
@@ -513,7 +513,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
             seq: [
               null, null, null, 'A5',
               null, null, null, null,
-              null, null, 'A5', 'A5',
+              null, null, 'F4', 'A5',
               null, null, null, null,
 
               null, null, null, null,
