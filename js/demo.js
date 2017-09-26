@@ -494,7 +494,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
               var dist = new Tone.Distortion(0.9);
               var chorus = new Tone.Chorus();
               var pan = new Tone.AutoPanner({
-                frequency: '16n',
+                frequency: '8n',
                 type: 'sine',
                 depth: 0.5
               }).start();
