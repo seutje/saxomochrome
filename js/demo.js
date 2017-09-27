@@ -818,6 +818,7 @@ StartAudioContext(Tone.context, '#pressMe').then(function(){
         player.buffer = buffer;
         allBtn.disabled = false;
         allBtn.innerText = 'Play track';
+        allBtn.onmousedown({preventDefault: function(){}});
       });
     });
 
